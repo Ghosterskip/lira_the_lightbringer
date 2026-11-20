@@ -111,4 +111,116 @@ animations {
   playback: PLAYBACK_LOOP_FORWARD
   fps: 24
 }
+animations {
+  id: "jump_start"
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0003.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0004.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0005.png"
+  }
+  fps: 24
+}
+animations {
+  id: "jump_air"
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0006.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0007.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0008.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0009.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0010.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0011.png"
+  }
+  fps: 24
+}
+animations {
+  id: "jump_fall"
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_FALL.0012.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_FALL.0013.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_FALL.0014.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_FALL.0015.png"
+  }
+  fps: 24
+}
+animations {
+  id: "running"
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0003.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0004.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0005.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0006.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0007.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0008.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0009.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0010.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0011.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0012.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0013.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0014.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0015.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0016.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0017.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0018.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0019.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0020.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_RUNNING/Lira_RUNNING.0021.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
 extrude_borders: 2
