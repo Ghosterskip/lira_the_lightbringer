@@ -1,0 +1,171 @@
+-- Player logic
+
+-- Tweaks for mechanics
+local air_acceleration_factor = 0.8
+local max_speed = 450
+local gravity = -1900
+local jump_takeoff_speed = 1200
+
+-- Tweaks for animation smoothness & Coyote Time
+local ground_grace_time = 0.08 -- prevents 1-frame idle/fall flicker
+local anim_playback_rate = 1.0 -- set to 0.5 if Tahoma2D export was on "twos" (12 unique drawings/sec at 24fps)
+
+-- Pre-hashing ids improves performance
+local msg_contact_point_response = hash("contact_point_response")
+local group_obstacle = hash("ground")
+local input_left = hash("left")
+local input_right = hash("right")
+local input_jump = hash("jump")
+local anim_walk = hash("walk")
+local anim_idle = hash("idle")
+local anim_jump = hash("jump")
+local anim_fall = hash("fall")
+
+function init(self)
+	-- Acquire input focus
+	msg.post(".", "acquire_input_focus")
+
+	-- Player state variables
+	self.velocity = vmath.vector3(0, 0, 0)
+	self.facing_direction = 1
+	self.correction = vmath.vector3()
+	self.ground_contact = false
+	self.wall_contact = false
+	self.ground_timer = 0
+	self.anim = nil
+end
+
+local function play_animation(self, anim)
+	-- Only play animations which are not already playing
+	if self.anim ~= anim then
+		sprite.play_flipbook("#sprite", anim, nil, { playback_rate = anim_playback_rate })
+		self.anim = anim
+	end
+end
+
+local function update_animations(self)
+	-- Flip sprite horizontally based on facing direction
+	if self.facing_direction ~= 0 then
+		sprite.set_hflip("#sprite", self.facing_direction < 0)
+	end
+
+	-- Use ground_timer > 0 instead of raw ground_contact to eliminate shaking
+	if self.ground_timer > 0 then
+		if math.abs(self.velocity.x) < 1 then
+			play_animation(self, anim_idle)
+		else
+			play_animation(self, anim_walk)
+		end
+	else
+		if self.velocity.y > 0 then
+			play_animation(self, anim_jump)
+		else
+			play_animation(self, anim_fall)
+		end
+	end
+end
+
+function update(self, dt)
+	-- Count down the ground grace / Coyote Time timer
+	if self.ground_timer > 0 then
+		self.ground_timer = self.ground_timer - dt
+	end
+
+	-- Update visuals in update() so animations run smoothly at render framerate
+	update_animations(self)
+end
+
+function fixed_update(self, dt)
+	-- Apply gravity
+	self.velocity.y = self.velocity.y + gravity * dt
+
+	-- Move player
+	local pos = go.get_position()
+	pos = pos + self.velocity * dt
+	go.set_position(pos)
+
+	-- Reset volatile collision state for the next physics step
+	self.correction = vmath.vector3()
+	self.ground_contact = false
+	self.wall_contact = false
+end
+
+-- https://defold.com
+local function handle_obstacle_contact(self, normal, distance)
+	if distance > 0 then
+		local proj = vmath.project(self.correction, normal * distance)
+		if proj < 1 then
+			local comp = (distance - distance * proj) * normal
+			go.set_position(go.get_position() + comp)
+			self.correction = self.correction + comp
+		end
+	end
+
+	-- Collided with a wall
+	if math.abs(normal.x) > 0.7 then
+		self.wall_contact = true
+		self.velocity.x = 0
+	end
+
+	-- Collided with the ground
+	if normal.y > 0.7 then
+		self.ground_contact = true
+		self.ground_timer = ground_grace_time
+		self.velocity.y = 0
+	end
+
+	-- Collided with the ceiling
+	if normal.y < -0.7 then
+		self.velocity.y = 0
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_contact_point_response then
+		if message.group == group_obstacle then
+			handle_obstacle_contact(self, message.normal, message.distance)
+		end
+	end
+end
+
+local function jump(self)
+	-- Using self.ground_timer > 0 allows jumping cleanly on flat ground + gives Coyote Time on ledges
+	if self.ground_timer > 0 then
+		self.velocity.y = jump_takeoff_speed
+		play_animation(self, anim_jump)
+		self.ground_contact = false
+		self.ground_timer = 0
+	end
+end
+
+local function abort_jump(self)
+	if self.velocity.y > 0 then
+		self.velocity.y = self.velocity.y * 0.5
+	end
+end
+
+local function walk(self, direction)
+	if direction ~= 0 then
+		self.facing_direction = direction
+	end
+
+	if self.ground_timer > 0 then
+		self.velocity.x = max_speed * direction
+	else
+		self.velocity.x = max_speed * air_acceleration_factor * direction
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == input_left then
+		walk(self, -action.value)
+	elseif action_id == input_right then
+		walk(self, action.value)
+	elseif action_id == input_jump then
+		if action.pressed then
+			jump(self)
+		elseif action.released then
+			abort_jump(self)
+		end
+	end
+end

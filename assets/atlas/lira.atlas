@@ -1,0 +1,114 @@
+animations {
+  id: "idle"
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0001.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0002.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0003.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0004.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0005.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0006.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0007.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0008.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0009.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0010.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0011.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0012.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0013.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0014.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0015.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0016.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0017.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0018.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0019.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0020.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0021.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0022.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0023.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0024.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0025.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0026.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0027.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0028.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0029.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0030.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0031.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0032.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0033.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0034.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0035.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_IDLE/Lira_IDLE.0036.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 24
+}
+extrude_borders: 2
