@@ -1,0 +1,4 @@
+images {
+  image: "/assets/images/bgs/empy_cave.png"
+}
+extrude_borders: 2
