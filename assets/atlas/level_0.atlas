@@ -1,0 +1,4 @@
+images {
+  image: "/assets/images/maps/Level_0__Rocks.png"
+}
+extrude_borders: 2

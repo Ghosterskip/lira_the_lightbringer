@@ -4,11 +4,11 @@
 local air_acceleration_factor = 0.8
 local max_speed = 450
 local gravity = -1900
-local jump_takeoff_speed = 1200
+local jump_takeoff_speed = 950
 
 -- Tweaks for animation smoothness & Coyote Time
-local ground_grace_time = 0.08 -- prevents 1-frame idle/fall flicker
-local anim_playback_rate = 1.0 -- set to 0.5 if Tahoma2D export was on "twos" (12 unique drawings/sec at 24fps)
+local ground_grace_time = 0.1 -- prevents 1-frame idle/fall flicker
+local anim_playback_rate = 0.75 -- set to 0.5 if Tahoma2D export was on "twos" (12 unique drawings/sec at 24fps)
 
 -- Pre-hashing ids improves performance
 local msg_contact_point_response = hash("contact_point_response")
@@ -18,14 +18,12 @@ local input_right = hash("right")
 local input_jump = hash("jump")
 local anim_walk = hash("running")
 local anim_idle = hash("idle")
-local anim_jump = hash("jump_start")
-local anim_fall = hash("jump_fall")
-local anim_air = hash("jump_air")
+local anim_jump = hash("jump_air")
 
 function init(self)
 	-- Acquire input focus
 	msg.post(".", "acquire_input_focus")
-
+	sound.play("/level#music_bg")
 	-- Player state variables
 	self.velocity = vmath.vector3(0, 0, 0)
 	self.facing_direction = 1
@@ -61,7 +59,7 @@ local function update_animations(self)
 		if self.velocity.y > 0 then
 			play_animation(self, anim_jump)
 		else
-			play_animation(self, anim_fall)
+			play_animation(self, anim_jump)
 		end
 	end
 end
@@ -91,35 +89,46 @@ function fixed_update(self, dt)
 	self.wall_contact = false
 end
 
--- https://defold.com
 local function handle_obstacle_contact(self, normal, distance)
 	if distance > 0 then
-		local proj = vmath.project(self.correction, normal * distance)
+		-- Separate purely vertically on floors, and purely horizontally on walls
+		local push_normal = normal
+		if normal.y > 0.7 then
+			push_normal = vmath.vector3(0, 1, 0)
+		elseif math.abs(normal.x) > 0.7 then
+			push_normal = vmath.vector3(normal.x > 0 and 1 or -1, 0, 0)
+		end
+
+		local proj = vmath.project(self.correction, push_normal * distance)
 		if proj < 1 then
-			local comp = (distance - distance * proj) * normal
+			local comp = (distance - distance * proj) * push_normal
 			go.set_position(go.get_position() + comp)
 			self.correction = self.correction + comp
 		end
 	end
 
-	-- Collided with a wall
+	-- Collided with a wall (pushing into the wall stops horizontal speed)
 	if math.abs(normal.x) > 0.7 then
 		self.wall_contact = true
-		self.velocity.x = 0
+		-- Only zero X velocity if moving into the wall
+		if (normal.x > 0 and self.velocity.x < 0) or (normal.x < 0 and self.velocity.x > 0) then
+			self.velocity.x = 0
+		end
 	end
 
-	-- Collided with the ground
-	if normal.y > 0.7 then
+	-- Collided with the ground (only trigger when falling/flat, not while rising past a wall seam)
+	if normal.y > 0.7 and self.velocity.y <= 0 then
 		self.ground_contact = true
 		self.ground_timer = ground_grace_time
 		self.velocity.y = 0
 	end
 
-	-- Collided with the ceiling
-	if normal.y < -0.7 then
+	-- Collided with the ceiling (use -0.5 to catch ceiling corners cleanly)
+	if normal.y < -0.5 and self.velocity.y > 0 then
 		self.velocity.y = 0
 	end
 end
+
 
 function on_message(self, message_id, message, sender)
 	if message_id == msg_contact_point_response then

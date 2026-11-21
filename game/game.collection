@@ -3,19 +3,8 @@ collection_instances {
   id: "player"
   collection: "/game/player.collection"
   position {
-    x: 720.0
-    y: 650.0
-    z: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
+    x: 305.0
+    y: 125.0
     z: 1.0
   }
 }
@@ -23,61 +12,27 @@ scale_along_z: 0
 embedded_instances {
   id: "level"
   data: "components {\n"
-  "  id: \"level\"\n"
-  "  component: \"/game/level.tilemap\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
+  "  id: \"level_0\"\n"
+  "  component: \"/assets/level_0.tilemap\"\n"
   "}\n"
   "embedded_components {\n"
   "  id: \"collisionobject\"\n"
   "  type: \"collisionobject\"\n"
-  "  data: \"collision_shape: \\\"/game/level.tilemap\\\"\\n"
+  "  data: \"collision_shape: \\\"/assets/level_0.tilemap\\\"\\n"
   "type: COLLISION_OBJECT_TYPE_STATIC\\n"
   "mass: 0.0\\n"
   "friction: 0.1\\n"
   "restitution: 0.5\\n"
   "group: \\\"\\\"\\n"
   "mask: \\\"player\\\"\\n"
-  "linear_damping: 0.0\\n"
-  "angular_damping: 0.0\\n"
-  "locked_rotation: false\\n"
   "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"music_bg\"\n"
+  "  type: \"sound\"\n"
+  "  data: \"sound: \\\"/assets/sound/music/music_bg_caves.ogg\\\"\\n"
+  "looping: 1\\n"
+  "\"\n"
   "}\n"
   ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
 }

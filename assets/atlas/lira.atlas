@@ -114,13 +114,9 @@ animations {
 animations {
   id: "jump_start"
   images {
-    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0003.png"
-  }
-  images {
-    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0004.png"
-  }
-  images {
-    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_PREPARATION.0005.png"
+    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0011.png"
+    pivot_x: 3.914573
+    pivot_y: -2.847397
   }
   fps: 24
 }
@@ -140,9 +136,6 @@ animations {
   }
   images {
     image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0010.png"
-  }
-  images {
-    image: "/assets/images/lira/Lira_JUMPING/Lira_JUMPING_AIR.0011.png"
   }
   fps: 24
 }

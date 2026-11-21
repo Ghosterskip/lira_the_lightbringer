@@ -1,5 +1,6 @@
 [project]
 title = lira_the_lightbringer
+dependencies#0 = https://github.com/iamnabholz/defold-ldtk-importer/archive/master.zip
 
 [bootstrap]
 main_collection = /game/game.collectionc
