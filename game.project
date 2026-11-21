@@ -1,6 +1,8 @@
 [project]
 title = lira_the_lightbringer
+custom_resources = /assets/banks
 dependencies#0 = https://github.com/iamnabholz/defold-ldtk-importer/archive/master.zip
+dependencies#1 = https://github.com/defold/extension-fmod/archive/refs/tags/v0.1.1.zip
 
 [bootstrap]
 main_collection = /game/game.collectionc
@@ -54,4 +56,9 @@ max_debug_vertices = 50000
 
 [html5]
 scale_mode = stretch
+heap_size = 512
+
+[fmod]
+speaker_mode = stereo
+live_update = 1
 

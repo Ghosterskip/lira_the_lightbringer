@@ -1,7 +1,21 @@
 name: "default"
+instances {
+  id: "lantern_light"
+  prototype: "/game/lantern_light.go"
+  children: "go"
+  position {
+    y: 53.0
+  }
+  scale3 {
+    x: 5.0
+    y: 3.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "player"
+  children: "go1"
+  children: "lantern_light"
   data: "components {\n"
   "  id: \"player\"\n"
   "  component: \"/game/player.script\"\n"
@@ -48,7 +62,7 @@ embedded_instances {
   "  id: \"sprite\"\n"
   "  type: \"sprite\"\n"
   "  data: \"default_animation: \\\"idle\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "material: \\\"/assets/materials/lit_sprite.material\\\"\\n"
   "textures {\\n"
   "  sampler: \\\"texture_sampler\\\"\\n"
   "  texture: \\\"/assets/atlas/lira.atlas\\\"\\n"
@@ -74,4 +88,54 @@ embedded_instances {
   "\"\n"
   "}\n"
   ""
+}
+embedded_instances {
+  id: "go"
+  data: ""
+}
+embedded_instances {
+  id: "go1"
+  data: "embedded_components {\n"
+  "  id: \"point_light\"\n"
+  "  type: \"point_light\"\n"
+  "  data: \"data {\\n"
+  "  struct {\\n"
+  "    fields {\\n"
+  "      key: \\\"color\\\"\\n"
+  "      value {\\n"
+  "        list {\\n"
+  "          values {\\n"
+  "            number: 1.0\\n"
+  "          }\\n"
+  "          values {\\n"
+  "            number: 1.0\\n"
+  "          }\\n"
+  "          values {\\n"
+  "            number: 0.800000011920929\\n"
+  "          }\\n"
+  "        }\\n"
+  "      }\\n"
+  "    }\\n"
+  "    fields {\\n"
+  "      key: \\\"intensity\\\"\\n"
+  "      value {\\n"
+  "        number: 3.0\\n"
+  "      }\\n"
+  "    }\\n"
+  "    fields {\\n"
+  "      key: \\\"range\\\"\\n"
+  "      value {\\n"
+  "        number: 200.0\\n"
+  "      }\\n"
+  "    }\\n"
+  "  }\\n"
+  "}\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: -9.0
+    y: 46.0
+    z: 20.0
+  }
 }

@@ -1,30 +1,56 @@
--- Player logic
-
--- Tweaks for mechanics
+-- Movement tweaks
 local air_acceleration_factor = 0.8
 local max_speed = 450
 local gravity = -1900
-local jump_takeoff_speed = 950
+local jump_takeoff_speed = 900
 
--- Tweaks for animation smoothness & Coyote Time
-local ground_grace_time = 0.1 -- prevents 1-frame idle/fall flicker
-local anim_playback_rate = 0.75 -- set to 0.5 if Tahoma2D export was on "twos" (12 unique drawings/sec at 24fps)
+-- Dash tweaks
+local dash_speed = 1100       -- burst speed in pixels/sec
+local dash_duration = 0.16    -- how long the dash lasts (seconds)
+local dash_cooldown = 0.25    -- brief pause before dashing again
+local dash_end_damping = 0.5  -- keeps 50% momentum when dash finishes so it feels smooth
 
--- Pre-hashing ids improves performance
+-- Animation & Coyote Time tweaks
+local ground_grace_time = 0.15
+local anim_playback_rate = 0.75
+
+-- Pre-hashed IDs
 local msg_contact_point_response = hash("contact_point_response")
 local group_obstacle = hash("ground")
 local input_left = hash("left")
 local input_right = hash("right")
+-- local fmod = require("fmod.studio")
+
+local input_up = hash("up")
+local input_down = hash("down")
 local input_jump = hash("jump")
+local input_dash = hash("dash")
+
 local anim_walk = hash("running")
 local anim_idle = hash("idle")
 local anim_jump = hash("jump_air")
+local anim_fall = hash("jump_air")
+-- Optional: add an "anim_dash = hash('dash')" once your artist draws it
 
 function init(self)
-	-- Acquire input focus
 	msg.post(".", "acquire_input_focus")
-	sound.play("/level#music_bg")
-	-- Player state variables
+	-- sound.play("/level#music_bg")
+	-- Testing fmod
+	local bundle_path = ""
+	local path_to_banks = "/assets/banks/Master.bank"
+	local system_name = sys.get_sys_info().system_name
+	-- if system_name == "Darwin" then
+	-- 	path_to_banks = bundle_path .. "/Contents/Resources/banks"
+	-- elseif system_name == "Android" then
+	-- 	path_to_banks = "file:///android_asset/banks"
+	-- end
+	fmod.studio.system:load_bank_memory(resource.load("/assets/banks/Master.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+	fmod.studio.system:load_bank_memory(resource.load("/assets/banks/Master.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+	local event_description = fmod.studio.system:get_event("event:/level_music")
+	self.music_bg_event = event_description:create_instance()
+	self.music_bg_event:start()
+	
+
 	self.velocity = vmath.vector3(0, 0, 0)
 	self.facing_direction = 1
 	self.correction = vmath.vector3()
@@ -32,10 +58,19 @@ function init(self)
 	self.wall_contact = false
 	self.ground_timer = 0
 	self.anim = nil
+
+	-- Track held directional keys for 8-way aiming
+	self.input_dir = vmath.vector3(0, 0, 0)
+
+	-- Dash state variables
+	self.is_dashing = false
+	self.dash_timer = 0
+	self.dash_cooldown_timer = 0
+	self.can_dash = true
+	self.dash_dir = vmath.vector3(1, 0, 0)
 end
 
 local function play_animation(self, anim)
-	-- Only play animations which are not already playing
 	if self.anim ~= anim then
 		sprite.play_flipbook("#sprite", anim, nil, { playback_rate = anim_playback_rate })
 		self.anim = anim
@@ -43,12 +78,10 @@ local function play_animation(self, anim)
 end
 
 local function update_animations(self)
-	-- Flip sprite horizontally based on facing direction
 	if self.facing_direction ~= 0 then
 		sprite.set_hflip("#sprite", self.facing_direction < 0)
 	end
 
-	-- Use ground_timer > 0 instead of raw ground_contact to eliminate shaking
 	if self.ground_timer > 0 then
 		if math.abs(self.velocity.x) < 1 then
 			play_animation(self, anim_idle)
@@ -59,31 +92,74 @@ local function update_animations(self)
 		if self.velocity.y > 0 then
 			play_animation(self, anim_jump)
 		else
-			play_animation(self, anim_jump)
+			play_animation(self, anim_fall)
 		end
 	end
 end
 
+local function start_dash(self)
+	if not self.can_dash or self.is_dashing or self.dash_cooldown_timer > 0 then
+		return
+	end
+
+	-- Determine dash direction from currently held keys
+	local dir = vmath.vector3(self.input_dir.x, self.input_dir.y, 0)
+
+	-- If no direction keys are held, dash forward in the direction Lira is facing
+	if vmath.length_sqr(dir) == 0 then
+		dir.x = self.facing_direction
+	else
+		-- Normalize so diagonal dashes (e.g. Up + Right) aren't faster than straight dashes
+		dir = vmath.normalize(dir)
+	end
+
+	self.is_dashing = true
+	self.can_dash = false
+	self.dash_timer = dash_duration
+	self.dash_dir = dir
+	self.velocity = dir * dash_speed
+	self.ground_timer = 0
+
+	if dir.x ~= 0 then
+		self.facing_direction = dir.x > 0 and 1 or -1
+	end
+end
+
 function update(self, dt)
-	-- Count down the ground grace / Coyote Time timer
 	if self.ground_timer > 0 then
 		self.ground_timer = self.ground_timer - dt
 	end
 
-	-- Update visuals in update() so animations run smoothly at render framerate
+	if self.dash_cooldown_timer > 0 then
+		self.dash_cooldown_timer = self.dash_cooldown_timer - dt
+	end
+
 	update_animations(self)
 end
 
 function fixed_update(self, dt)
-	-- Apply gravity
-	self.velocity.y = self.velocity.y + gravity * dt
+	if self.is_dashing then
+		-- Maintain constant dash velocity (no gravity during dash)
+		self.velocity = self.dash_dir * dash_speed
+		self.dash_timer = self.dash_timer - dt
+
+		if self.dash_timer <= 0 then
+			self.is_dashing = false
+			self.dash_cooldown_timer = dash_cooldown
+			-- Dampen velocity at the end of the dash so Lira doesn't launch into orbit
+			self.velocity = self.velocity * dash_end_damping
+		end
+	else
+		-- Normal gravity when not dashing
+		self.velocity.y = self.velocity.y + gravity * dt
+	end
 
 	-- Move player
 	local pos = go.get_position()
 	pos = pos + self.velocity * dt
 	go.set_position(pos)
 
-	-- Reset volatile collision state for the next physics step
+	-- Reset volatile collision state
 	self.correction = vmath.vector3()
 	self.ground_contact = false
 	self.wall_contact = false
@@ -91,7 +167,6 @@ end
 
 local function handle_obstacle_contact(self, normal, distance)
 	if distance > 0 then
-		-- Separate purely vertically on floors, and purely horizontally on walls
 		local push_normal = normal
 		if normal.y > 0.7 then
 			push_normal = vmath.vector3(0, 1, 0)
@@ -107,28 +182,30 @@ local function handle_obstacle_contact(self, normal, distance)
 		end
 	end
 
-	-- Collided with a wall (pushing into the wall stops horizontal speed)
+	-- Collided with a wall
 	if math.abs(normal.x) > 0.7 then
 		self.wall_contact = true
-		-- Only zero X velocity if moving into the wall
 		if (normal.x > 0 and self.velocity.x < 0) or (normal.x < 0 and self.velocity.x > 0) then
 			self.velocity.x = 0
 		end
 	end
 
-	-- Collided with the ground (only trigger when falling/flat, not while rising past a wall seam)
+	-- Collided with the ground
 	if normal.y > 0.7 and self.velocity.y <= 0 then
 		self.ground_contact = true
 		self.ground_timer = ground_grace_time
 		self.velocity.y = 0
+		-- Recharge air dash whenever Lira touches solid ground
+		if not self.is_dashing then
+			self.can_dash = true
+		end
 	end
 
-	-- Collided with the ceiling (use -0.5 to catch ceiling corners cleanly)
+	-- Collided with the ceiling
 	if normal.y < -0.5 and self.velocity.y > 0 then
 		self.velocity.y = 0
 	end
 end
-
 
 function on_message(self, message_id, message, sender)
 	if message_id == msg_contact_point_response then
@@ -139,8 +216,7 @@ function on_message(self, message_id, message, sender)
 end
 
 local function jump(self)
-	-- Using self.ground_timer > 0 allows jumping cleanly on flat ground + gives Coyote Time on ledges
-	if self.ground_timer > 0 then
+	if self.ground_timer > 0 and not self.is_dashing then
 		self.velocity.y = jump_takeoff_speed
 		play_animation(self, anim_jump)
 		self.ground_contact = false
@@ -149,33 +225,64 @@ local function jump(self)
 end
 
 local function abort_jump(self)
-	if self.velocity.y > 0 then
+	if self.velocity.y > 0 and not self.is_dashing then
 		self.velocity.y = self.velocity.y * 0.5
 	end
 end
 
-local function walk(self, direction)
-	if direction ~= 0 then
-		self.facing_direction = direction
+local function update_horizontal_walk(self)
+	-- Don't override velocity with normal walk speed while mid-dash
+	if self.is_dashing then
+		return
+	end
+
+	local dir_x = self.input_dir.x
+	if dir_x ~= 0 then
+		self.facing_direction = dir_x
 	end
 
 	if self.ground_timer > 0 then
-		self.velocity.x = max_speed * direction
+		self.velocity.x = max_speed * dir_x
 	else
-		self.velocity.x = max_speed * air_acceleration_factor * direction
+		self.velocity.x = max_speed * air_acceleration_factor * dir_x
 	end
 end
 
 function on_input(self, action_id, action)
+	-- Track horizontal input state cleanly even when opposing keys overlap
 	if action_id == input_left then
-		walk(self, -action.value)
+		self.input_dir.x = action.released and 0 or -1
+		update_horizontal_walk(self)
 	elseif action_id == input_right then
-		walk(self, action.value)
+		self.input_dir.x = action.released and 0 or 1
+		update_horizontal_walk(self)
+	elseif action_id == input_up then
+		self.input_dir.y = action.released and 0 or 1
+	elseif action_id == input_down then
+		self.input_dir.y = action.released and 0 or -1
 	elseif action_id == input_jump then
 		if action.pressed then
 			jump(self)
 		elseif action.released then
 			abort_jump(self)
 		end
+	elseif action_id == input_dash then
+		if action.pressed then
+			start_dash(self)
+		end
 	end
+end
+
+function final(self)
+	if not fmod then
+		return
+	end
+
+	-- Release event instances when a collection proxy unloads. Banks are shared
+	-- and cached in fmod_banks.lua, so they are intentionally not unloaded here.
+	if self.music_bg_event then
+		self.music_bg_event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+		self.music_bg_event:release()
+	end
+	
 end

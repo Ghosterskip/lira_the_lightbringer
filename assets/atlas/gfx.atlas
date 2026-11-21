@@ -1,0 +1,4 @@
+images {
+  image: "/assets/images/gfx/lantern_glow_fx.png"
+}
+extrude_borders: 2

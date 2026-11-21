@@ -3063,4 +3063,4 @@ layers {
     tile: 22
   }
 }
-material: "/builtins/materials/tile_map.material"
+material: "/assets/materials/lit_sprite.material"
