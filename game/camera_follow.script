@@ -1,0 +1,26 @@
+go.property("target", msg.url("/player/player"))
+go.property("smooth_speed", 10) -- Higher = tighter follow; set to 0 for instant snap
+
+function init(self)
+	-- Activate this camera
+	msg.post("#camera", "acquire_camera_focus")
+	-- Enable camera projection in the default render script
+	msg.post("@render:", "use_camera_projection")
+end
+
+function late_update(self, dt)
+	local target_pos = go.get_world_position(self.target)
+	local cam_pos = go.get_position()
+
+	if self.smooth_speed > 0 then
+		-- Smooth lerp on X and Y while keeping camera Z fixed at 0
+		cam_pos.x = vmath.lerp(math.min(1, self.smooth_speed * dt), cam_pos.x, target_pos.x)
+		cam_pos.y = vmath.lerp(math.min(1, self.smooth_speed * dt), cam_pos.y, target_pos.y)
+	else
+		-- Instant lock on X and Y
+		cam_pos.x = target_pos.x
+		cam_pos.y = target_pos.y
+	end
+
+	go.set_position(cam_pos)
+end

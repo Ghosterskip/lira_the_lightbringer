@@ -5,7 +5,6 @@ collection_instances {
   position {
     x: 305.0
     y: 125.0
-    z: 1.0
   }
 }
 scale_along_z: 0
@@ -44,13 +43,13 @@ embedded_instances {
   "      value {\\n"
   "        list {\\n"
   "          values {\\n"
-  "            number: 0.10196078568696976\\n"
+  "            number: 0.20000000298023224\\n"
   "          }\\n"
   "          values {\\n"
-  "            number: 0.10196078568696976\\n"
+  "            number: 0.20000000298023224\\n"
   "          }\\n"
   "          values {\\n"
-  "            number: 0.10196078568696976\\n"
+  "            number: 0.20000000298023224\\n"
   "          }\\n"
   "        }\\n"
   "      }\\n"
@@ -58,7 +57,7 @@ embedded_instances {
   "    fields {\\n"
   "      key: \\\"intensity\\\"\\n"
   "      value {\\n"
-  "        number: 1.0\\n"
+  "        number: 2.0\\n"
   "      }\\n"
   "    }\\n"
   "  }\\n"
@@ -66,4 +65,57 @@ embedded_instances {
   "\"\n"
   "}\n"
   ""
+  position {
+    z: 0.5
+  }
+}
+embedded_instances {
+  id: "bg"
+  data: "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"empy_cave\\\"\\n"
+  "material: \\\"/assets/materials/lit_sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/assets/atlas/bg_lvl_0.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 2558.0\n"
+  "    y: 1218.0\n"
+  "  }\n"
+  "  scale {\n"
+  "    x: 2.0\n"
+  "    y: 2.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    y: 537.0
+    z: -0.2
+  }
+}
+embedded_instances {
+  id: "go"
+  data: "components {\n"
+  "  id: \"camera_follow\"\n"
+  "  component: \"/game/camera_follow.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"camera\"\n"
+  "  type: \"camera\"\n"
+  "  data: \"aspect_ratio: 1.0\\n"
+  "fov: 0.7854\\n"
+  "near_z: -1.0\\n"
+  "far_z: 1.0\\n"
+  "auto_aspect_ratio: 1\\n"
+  "orthographic_projection: 1\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 329.0
+    y: 145.0
+  }
 }

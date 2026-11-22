@@ -9,6 +9,10 @@ embedded_components {
   "  texture: \"/assets/atlas/gfx.atlas\"\n"
   "}\n"
   ""
+  position {
+    x: -0.8
+    y: -4.0
+  }
   scale {
     x: 3.0
     y: 3.0
