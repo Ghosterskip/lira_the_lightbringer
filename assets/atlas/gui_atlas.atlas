@@ -1,0 +1,7 @@
+images {
+  image: "/assets/images/gui/DialogueBox.png"
+}
+images {
+  image: "/assets/images/gui/TargetBox.png"
+}
+extrude_borders: 2

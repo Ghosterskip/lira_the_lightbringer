@@ -119,3 +119,14 @@ embedded_instances {
     y: 145.0
   }
 }
+embedded_instances {
+  id: "go1"
+  data: "components {\n"
+  "  id: \"dialogue\"\n"
+  "  component: \"/gui/dialogue/dialogue.gui\"\n"
+  "}\n"
+  ""
+  position {
+    z: 0.6
+  }
+}

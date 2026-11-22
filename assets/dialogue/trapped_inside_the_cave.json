@@ -1,0 +1,59 @@
+{
+	"passages": [
+		{
+			"text": "(To herself) Stupid decisions, again and again. My parents will not hear me from this place, so I guess I am trapped.\n[[C]]",
+			"links": [
+				{
+					"name": "C",
+					"link": "C",
+					"pid": "3"
+				}
+			],
+			"name": "B",
+			"pid": "1",
+			"position": {
+				"x": "600",
+				"y": "250"
+			},
+			"tags": [
+				"Lira"
+			]
+		},
+		{
+			"text": "(To herself) Ok Lira, again, why you want to follow a misterious voice calling you from the inside of a cave?\n[[B]]",
+			"links": [
+				{
+					"name": "B",
+					"link": "B",
+					"pid": "1"
+				}
+			],
+			"name": "A",
+			"pid": "2",
+			"position": {
+				"x": "450",
+				"y": "250"
+			},
+			"tags": [
+				"Lira"
+			]
+		},
+		{
+			"text": "(To herself) Well, if I just stay here without doing something I will just die, so lets see if there is an exit of this nightmare.",
+			"name": "C",
+			"pid": "3",
+			"position": {
+				"x": "600",
+				"y": "375"
+			},
+			"tags": [
+				"Lira"
+			]
+		}
+	],
+	"name": "Trapped inside the cave",
+	"startnode": "2",
+	"creator": "Twine",
+	"creator-version": "2.12.1",
+	"ifid": "6597DEE2-2704-4325-A26D-C3BEBA96AD69"
+}

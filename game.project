@@ -1,8 +1,12 @@
 [project]
 title = lira_the_lightbringer
-custom_resources = /assets/banks
+custom_resources = /assets/banks,/assets/dialogue
 dependencies#0 = https://github.com/iamnabholz/defold-ldtk-importer/archive/master.zip
 dependencies#1 = https://github.com/defold/extension-fmod/archive/refs/tags/v0.1.1.zip
+dependencies#2 = https://github.com/paweljarosz/defork/archive/master.zip
+dependencies#3 = https://github.com/Insality/defold-event/archive/refs/tags/21.zip
+dependencies#4 = https://github.com/Insality/druid/archive/refs/tags/1.4.0.zip
+dependencies#5 = https://github.com/britzl/defold-richtext/archive/refs/tags/5.22.1.zip
 
 [bootstrap]
 main_collection = /game/game.collectionc

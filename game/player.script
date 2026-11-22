@@ -68,6 +68,8 @@ function init(self)
 	self.dash_cooldown_timer = 0
 	self.can_dash = true
 	self.dash_dir = vmath.vector3(1, 0, 0)
+
+	msg.post("game:/go1#dialogue", "start_dialogue", { start_passage = "A" })
 end
 
 local function play_animation(self, anim)

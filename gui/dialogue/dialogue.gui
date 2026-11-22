@@ -1,0 +1,90 @@
+script: "/gui/dialogue/dialogue_script.gui_script"
+fonts {
+  name: "medieval_sharp"
+  font: "/assets/fonts/medieval_sharp.font"
+}
+textures {
+  name: "gui_atlas"
+  texture: "/assets/atlas/gui_atlas.atlas"
+}
+nodes {
+  position {
+    x: 480.0
+    y: 270.0
+  }
+  size {
+    x: 960.0
+    y: 540.0
+  }
+  type: TYPE_BOX
+  id: "root"
+  adjust_mode: ADJUST_MODE_STRETCH
+  alpha: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: -135.0
+  }
+  scale {
+    x: 0.9
+    y: 0.9
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/DialogueBox"
+  id: "dialogue_container"
+  parent: "root"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  scale {
+    x: 2.0
+    y: 2.0
+  }
+  size {
+    x: 375.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "This is the dialogue content. This will be updated dynamically with more dialogue data"
+  font: "medieval_sharp"
+  id: "dialogue_content"
+  line_break: true
+  parent: "dialogue_container"
+  inherit_alpha: true
+  outline_alpha: 0.0
+}
+nodes {
+  position {
+    x: -202.0
+    y: -39.0
+  }
+  scale {
+    x: 0.9
+    y: 0.9
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/TargetBox"
+  id: "character_name"
+  parent: "root"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  scale {
+    x: 2.5
+    y: 2.5
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Character"
+  font: "medieval_sharp"
+  id: "character_label"
+  parent: "character_name"
+  inherit_alpha: true
+  outline_alpha: 0.0
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
