@@ -1,10 +1,11 @@
 local defork = require("defork.defork")
+local dialogue_data = require("data.dialogue_data")
 
 local function show_node(self, node_id)
 	if not node_id then
-		-- No next node: hide the dialogue UI
 		gui.set_enabled(gui.get_node("root"), false)
 		self.active = false
+		dialogue_data.in_active_dialogue = false
 		return
 	end
 
@@ -20,6 +21,7 @@ local function show_node(self, node_id)
 	-- 3. Update your existing GUI text nodes
 	gui.set_text(self.name_node, speaker)
 	gui.set_text(self.text_node, text)
+	dialogue_data.in_active_dialogue = true
 end
 
 function init(self)
@@ -35,12 +37,10 @@ function init(self)
 end
 
 function on_message(self, message_id, message, sender)
-	-- Triggered by an NPC or player script: msg.post("/gui#dialogue", "start_dialogue", { start_passage = "Guard_Start" })
 	if message_id == hash("start_dialogue") then
 		self.active = true
 		gui.set_enabled(gui.get_node("root"), true)
 
-		-- Find the passage ID matching the requested character's start passage name
 		local start_id = defork.getStartNodeID()
 		for id, passage in pairs(self.conversation.passages) do
 			if passage.name == message.start_passage then

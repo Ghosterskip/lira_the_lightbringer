@@ -1,5 +1,7 @@
 local M = {}
 
+M.in_active_dialogue = false
+
 M.dialogue_avatar_map = {}
 
 M.dialogue_path_map = {
