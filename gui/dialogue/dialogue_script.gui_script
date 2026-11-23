@@ -11,14 +11,11 @@ local function show_node(self, node_id)
 
 	defork.setCurrentNode(node_id)
 
-	-- 1. Get speaker name from the first Twine tag (or fallback)
 	local tags = defork.getTags(node_id)
 	local speaker = (tags and tags[1]) or "Unknown"
 
-	-- 2. Get clean dialogue text (Twison links are stripped automatically)
 	local text = defork.getText(node_id)
 
-	-- 3. Update your existing GUI text nodes
 	gui.set_text(self.name_node, speaker)
 	gui.set_text(self.text_node, text)
 	dialogue_data.in_active_dialogue = true
@@ -31,8 +28,7 @@ function init(self)
 	self.text_node = gui.get_node("dialogue_content")
 	self.active = false
 
-	-- Load your Twison JSON (registered under Custom Resources in game.project)
-	self.conversation = defork.load("/assets/dialogue/trapped_inside_the_cave.json")
+	self.conversation = dialogue_data.dialogue_map[1].dialogue_resource
 	gui.set_enabled(gui.get_node("root"), false)
 end
 
@@ -42,8 +38,10 @@ function on_message(self, message_id, message, sender)
 		gui.set_enabled(gui.get_node("root"), true)
 
 		local start_id = defork.getStartNodeID()
+		local active_dialogue = dialogue_data.retrieve_dialogue(message.dialogue_id)
+		self.conversation = active_dialogue.dialogue_resource
 		for id, passage in pairs(self.conversation.passages) do
-			if passage.name == message.start_passage then
+			if passage.name == active_dialogue.start_passage then
 				start_id = id
 				break
 			end
@@ -57,7 +55,7 @@ function on_input(self, action_id, action)
 	if not self.active then return end
 
 	-- Advance to the next line on click or interact key
-	if (action_id == hash("touch") or action_id == hash("confirm")) and action.pressed then
+	if dialogue_data.in_active_dialogue and (action_id == hash("touch") or action_id == hash("confirm")) and action.pressed then
 		local options = defork.getOptions() -- Linear links appear as option #1
 		if options and #options > 0 then
 			local next_node_id = defork.getOptionLink(1)

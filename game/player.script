@@ -1,4 +1,6 @@
 local dialogue_data = require("data.dialogue_data")
+local fmod_audio = require("fmod_audio.fmod_audio")
+local fmod_banks = require("fmod_audio.fmod_banks")
 
 -- Movement tweaks
 local air_acceleration_factor = 0.8
@@ -36,16 +38,8 @@ local anim_fall = hash("jump_air")
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
-	-- sound.play("/level#music_bg")
-	-- Testing fmod
-	local bundle_path = ""
-	local path_to_banks = "/assets/banks/Master.bank"
-	local system_name = sys.get_sys_info().system_name
-	fmod.studio.system:load_bank_memory(resource.load("/assets/banks/Master.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
-	fmod.studio.system:load_bank_memory(resource.load("/assets/banks/Master.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
-	local event_description = fmod.studio.system:get_event("event:/level_music")
-	self.music_bg_event = event_description:create_instance()
-	self.music_bg_event:start()
+	fmod_banks.load({ "master", "strings" })
+	self.music = fmod_audio.play_loop("event:/level_music")
 	
 
 	self.velocity = vmath.vector3(0, 0, 0)
@@ -66,7 +60,7 @@ function init(self)
 	self.can_dash = true
 	self.dash_dir = vmath.vector3(1, 0, 0)
 
-	msg.post("game:/go1#dialogue", "start_dialogue", { start_passage = "A" })
+	msg.post("game:/go1#dialogue", "start_dialogue", { dialogue_id = "trapped_inside_the_cave" })
 end
 
 local function play_animation(self, anim)
@@ -125,6 +119,9 @@ local function start_dash(self)
 end
 
 function update(self, dt)
+	if self.music and self.music:get_playback_state() == fmod.STUDIO_PLAYBACK_STOPPED then
+		self.music:start()
+	end
 	if self.ground_timer > 0 then
 		self.ground_timer = self.ground_timer - dt
 	end
@@ -280,11 +277,6 @@ function final(self)
 		return
 	end
 
-	-- Release event instances when a collection proxy unloads. Banks are shared
-	-- and cached in fmod_banks.lua, so they are intentionally not unloaded here.
-	if self.music_bg_event then
-		self.music_bg_event:stop(fmod.STUDIO_STOP_IMMEDIATE)
-		self.music_bg_event:release()
-	end
+	fmod_banks.unload({ "master", "strings" })
 	
 end
