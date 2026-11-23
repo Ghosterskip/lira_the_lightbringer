@@ -1,0 +1,117 @@
+fonts {
+  name: "medieval_sharp"
+  font: "/assets/fonts/medieval_sharp.font"
+}
+textures {
+  name: "gui_atlas"
+  texture: "/assets/atlas/gui_atlas.atlas"
+}
+nodes {
+  position {
+    x: 480.0
+    y: 270.0
+  }
+  size {
+    x: 960.0
+    y: 540.0
+  }
+  color {
+    x: 0.043137256
+    y: 0.0627451
+    z: 0.08627451
+  }
+  type: TYPE_BOX
+  id: "main_menu_root"
+  adjust_mode: ADJUST_MODE_STRETCH
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -160.0
+  }
+  size {
+    x: 640.0
+    y: 540.0
+  }
+  type: TYPE_BOX
+  id: "illustration_area"
+  parent: "main_menu_root"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 320.0
+  }
+  size {
+    x: 320.0
+    y: 540.0
+  }
+  color {
+    x: 0.043137256
+    y: 0.0627451
+    z: 0.08627451
+  }
+  type: TYPE_BOX
+  id: "interaction_area"
+  parent: "main_menu_root"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: 26.0
+  }
+  scale {
+    x: 0.55
+    y: 0.55
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/main_menu_button"
+  id: "start_button"
+  parent: "interaction_area"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 350.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Start"
+  font: "medieval_sharp"
+  id: "start_button_text"
+  parent: "start_button"
+  inherit_alpha: true
+  font_size: 64.0
+}
+nodes {
+  position {
+    y: -74.0
+  }
+  scale {
+    x: 0.55
+    y: 0.55
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/main_menu_button"
+  id: "settings_button"
+  parent: "interaction_area"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 350.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Settings"
+  font: "medieval_sharp"
+  id: "settings_button_text"
+  parent: "settings_button"
+  inherit_alpha: true
+  font_size: 64.0
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
