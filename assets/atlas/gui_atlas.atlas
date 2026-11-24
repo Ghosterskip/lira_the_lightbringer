@@ -7,4 +7,7 @@ images {
 images {
   image: "/assets/images/gui/main_menu_button.png"
 }
+images {
+  image: "/assets/images/lira_cave.png"
+}
 extrude_borders: 2

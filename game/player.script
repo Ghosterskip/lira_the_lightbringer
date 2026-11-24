@@ -10,7 +10,7 @@ local jump_takeoff_speed = 900
 
 -- Dash tweaks
 local dash_speed = 1100       -- burst speed in pixels/sec
-local dash_duration = 0.16    -- how long the dash lasts (seconds)
+local dash_duration = 0.20   -- how long the dash lasts (seconds)
 local dash_cooldown = 0.25    -- brief pause before dashing again
 local dash_end_damping = 0.5  -- keeps 50% momentum when dash finishes so it feels smooth
 
@@ -34,6 +34,7 @@ local anim_walk = hash("running")
 local anim_idle = hash("idle")
 local anim_jump = hash("jump_air")
 local anim_fall = hash("jump_air")
+local anim_dash = hash("tether_dash")
 -- Optional: add an "anim_dash = hash('dash')" once your artist draws it
 
 function init(self)
@@ -73,6 +74,12 @@ end
 local function update_animations(self)
 	if self.facing_direction ~= 0 then
 		sprite.set_hflip("#sprite", self.facing_direction < 0)
+	end
+
+	if self.is_dashing then
+		fmod_audio.play_one_shot("event:/dash")
+		play_animation(self, anim_dash)
+		return
 	end
 
 	if self.ground_timer > 0 then

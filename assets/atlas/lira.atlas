@@ -216,4 +216,32 @@ animations {
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
+animations {
+  id: "tether_dash"
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0002.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0003.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0004.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0005.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0006.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0007.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0008.png"
+  }
+  images {
+    image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0009.png"
+  }
+  fps: 60
+}
 extrude_borders: 2

@@ -30,11 +30,12 @@ nodes {
   position {
     x: -160.0
   }
-  size {
-    x: 640.0
-    y: 540.0
+  scale {
+    x: 0.2
+    y: 0.16
   }
   type: TYPE_BOX
+  texture: "gui_atlas/lira_cave"
   id: "illustration_area"
   parent: "main_menu_root"
   size_mode: SIZE_MODE_AUTO
@@ -112,6 +113,55 @@ nodes {
   parent: "settings_button"
   inherit_alpha: true
   font_size: 64.0
+}
+nodes {
+  position {
+    y: -175.0
+  }
+  scale {
+    x: 0.55
+    y: 0.55
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/main_menu_button"
+  id: "credits_button"
+  parent: "interaction_area"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 350.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Credits"
+  font: "medieval_sharp"
+  id: "credits_button_text"
+  parent: "credits_button"
+  inherit_alpha: true
+  font_size: 64.0
+}
+nodes {
+  position {
+    y: 168.0
+  }
+  size {
+    x: 270.0
+    y: 100.0
+  }
+  color {
+    x: 0.63529414
+    y: 0.62352943
+    z: 0.49411765
+  }
+  type: TYPE_TEXT
+  text: "Lira:\n"
+  "The Lightbringer"
+  font: "medieval_sharp"
+  id: "text"
+  parent: "interaction_area"
+  font_size: 32.0
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
