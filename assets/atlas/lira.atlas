@@ -242,6 +242,6 @@ animations {
   images {
     image: "/assets/images/lira/Lira_TETHER_DASH/Lira_TELEPORT_DASH.0009.png"
   }
-  fps: 60
+  fps: 48
 }
 extrude_borders: 2
