@@ -1,0 +1,183 @@
+textures {
+  name: "gui_atlas"
+  texture: "/assets/atlas/gui_atlas.atlas"
+}
+nodes {
+  position {
+    x: 480.0
+    y: 270.0
+  }
+  size {
+    x: 960.0
+    y: 540.0
+  }
+  type: TYPE_BOX
+  id: "root"
+  adjust_mode: ADJUST_MODE_STRETCH
+  inherit_alpha: true
+  alpha: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -233.0
+    y: 150.0
+  }
+  size {
+    x: 400.0
+    y: 150.0
+  }
+  type: TYPE_BOX
+  id: "main_container"
+  parent: "root"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -115.0
+  }
+  size {
+    x: 100.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "avatar"
+  parent: "main_container"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 63.0
+  }
+  size {
+    x: 216.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "indicators"
+  parent: "main_container"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: 25.0
+  }
+  size {
+    x: 200.0
+    y: 50.0
+  }
+  type: TYPE_BOX
+  id: "hp"
+  parent: "indicators"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: -25.0
+  }
+  size {
+    x: 200.0
+    y: 50.0
+  }
+  type: TYPE_BOX
+  id: "energy"
+  parent: "indicators"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -83.0
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergy"
+  id: "energy0"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -50.0
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergy"
+  id: "energy1"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -16.4
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergy"
+  id: "energy2"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 16.6
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergy"
+  id: "energy3"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 49.9
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergyEmpty"
+  id: "energy4"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 83.2
+    y: 7.0
+  }
+  scale {
+    x: 0.1
+    y: 0.1
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/LanternEnergyEmpty"
+  id: "energy5"
+  parent: "energy"
+  size_mode: SIZE_MODE_AUTO
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
