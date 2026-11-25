@@ -1,0 +1,38 @@
+go.property("direction", vmath.vector3(1, 0, 0))
+go.property("speed", 950)
+go.property("damage", 1)
+go.property("lifetime", 1.5)
+
+local GROUP_ENEMY = hash("enemy")
+local GROUP_GROUND = hash("ground")
+local MSG_TRIGGER = hash("trigger_response")
+
+function init(self)
+	self.timer = 0
+	-- Rotate the projectile sprite to match its 8-way travel direction
+	local angle = math.atan2(self.direction.y, self.direction.x)
+	go.set_rotation(vmath.quat_rotation_z(angle))
+end
+
+function update(self, dt)
+	self.timer = self.timer + dt
+	if self.timer >= self.lifetime then
+		go.delete()
+		return
+	end
+
+	local pos = go.get_position()
+	pos = pos + self.direction * self.speed * dt
+	go.set_position(pos)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == MSG_TRIGGER and message.enter then
+		if message.other_group == GROUP_ENEMY then
+			msg.post(message.other_id, "take_damage", { amount = self.damage })
+			go.delete()
+		elseif message.other_group == GROUP_GROUND then
+			go.delete()
+		end
+	end
+end

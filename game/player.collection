@@ -81,6 +81,12 @@ embedded_instances {
   "    y: 0.1\n"
   "  }\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"projectile_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/game/combat/light_projectile.go\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
