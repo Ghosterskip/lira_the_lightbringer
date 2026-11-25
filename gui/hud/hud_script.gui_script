@@ -1,8 +1,8 @@
 local ERROR_DISPLAY_TIME = 2.0
 local FADE_DURATION = 0.3
 local TOTAL_LANTERNS = 6
-local ANIM_FULL = hash("LanternEnergy")   -- Replace with your lit lantern image name in the atlas
-local ANIM_EMPTY = hash("LanternEnergyEmpty") -- Replace with your unlit lantern image name in the atlas
+local ANIM_FULL = hash("LanternEnergy")
+local ANIM_EMPTY = hash("LanternEnergyEmpty")
 
 local function set_energy_icons(self, active_count)
 	for i = 1, TOTAL_LANTERNS do
@@ -28,7 +28,6 @@ local function hide_error(self)
 end
 
 local function show_error(self, text)
-	-- Cancel any running hide timer or fade animation if triggered again
 	if self.error_timer then
 		timer.cancel(self.error_timer)
 		self.error_timer = nil

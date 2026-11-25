@@ -40,6 +40,8 @@ local anim_jump = hash("jump_air")
 local anim_fall = hash("jump_air")
 local anim_dash = hash("tether_dash")
 
+local trying_to_dash = false
+
 local function sync_energy_hud(self)
 	local whole_lanterns = math.floor(self.energy)
 	if whole_lanterns ~= self.displayed_energy then
@@ -52,6 +54,9 @@ end
 local function try_spend_energy(self, cost)
 	if self.energy < cost then
 		msg.post("/hud#hud", "show_error", { text = "Not enough energy!" })
+		if trying_to_dash then
+			self.can_dash = false
+		end
 		return false
 	end
 
@@ -126,10 +131,12 @@ local function update_animations(self)
 end
 
 local function start_dash(self)
+	trying_to_dash = true
+	try_spend_energy(self, 2)
 	if not self.can_dash or self.is_dashing or self.dash_cooldown_timer > 0 then
 		return
 	end
-	try_spend_energy(self, 2)
+	trying_to_dash = false
 	-- Determine dash direction from currently held keys
 	local dir = vmath.vector3(self.input_dir.x, self.input_dir.y, 0)
 
@@ -231,13 +238,11 @@ local function handle_obstacle_contact(self, normal, distance)
 		self.ground_contact = true
 		self.ground_timer = ground_grace_time
 		self.velocity.y = 0
-		-- Recharge air dash whenever Lira touches solid ground
 		if not self.is_dashing then
 			self.can_dash = true
 		end
 	end
 
-	-- Collided with the ceiling
 	if normal.y < -0.5 and self.velocity.y > 0 then
 		self.velocity.y = 0
 	end
@@ -268,7 +273,6 @@ local function abort_jump(self)
 end
 
 local function update_horizontal_walk(self)
-	-- Don't override velocity with normal walk speed while mid-dash
 	if self.is_dashing then
 		return
 	end
