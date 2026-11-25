@@ -1,9 +1,10 @@
 local dialogue_data = require("data.dialogue_data")
 local fmod_audio = require("fmod_audio.fmod_audio")
 local fmod_banks = require("fmod_audio.fmod_banks")
--- local camera_url = msg.url("/go#camera_follow") -- update to match your camera script path
 local msg_shake = hash("shake")
 go.property("camera_url", msg.url("/go#camera_follow"))
+local MAX_ENERGY = 6
+local ENERGY_RECOVER_RATE = 0.5 -- Lanterns recovered per second (0.5 = 1 lantern every 2s)
 
 -- Movement tweaks
 local air_acceleration_factor = 0.8
@@ -38,7 +39,26 @@ local anim_idle = hash("idle")
 local anim_jump = hash("jump_air")
 local anim_fall = hash("jump_air")
 local anim_dash = hash("tether_dash")
--- Optional: add an "anim_dash = hash('dash')" once your artist draws it
+
+local function sync_energy_hud(self)
+	local whole_lanterns = math.floor(self.energy)
+	if whole_lanterns ~= self.displayed_energy then
+		self.displayed_energy = whole_lanterns
+		msg.post("/hud#hud", "update_energy", { current = whole_lanterns })
+	end
+end
+
+-- Call this whenever Lira casts an ability
+local function try_spend_energy(self, cost)
+	if self.energy < cost then
+		msg.post("/hud#hud", "show_error", { text = "Not enough energy!" })
+		return false
+	end
+
+	self.energy = self.energy - cost
+	sync_energy_hud(self)
+	return true
+end
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
@@ -65,6 +85,10 @@ function init(self)
 	self.dash_dir = vmath.vector3(1, 0, 0)
 
 	msg.post("game:/go1#dialogue", "start_dialogue", { dialogue_id = "trapped_inside_the_cave" })
+
+	self.energy = MAX_ENERGY
+	self.displayed_energy = MAX_ENERGY
+	msg.post("/hud#hud", "update_energy", { current = self.displayed_energy })
 end
 
 local function play_animation(self, anim)
@@ -105,7 +129,7 @@ local function start_dash(self)
 	if not self.can_dash or self.is_dashing or self.dash_cooldown_timer > 0 then
 		return
 	end
-
+	try_spend_energy(self, 2)
 	-- Determine dash direction from currently held keys
 	local dir = vmath.vector3(self.input_dir.x, self.input_dir.y, 0)
 
@@ -142,6 +166,11 @@ function update(self, dt)
 	end
 
 	update_animations(self)
+	if self.energy < MAX_ENERGY then
+		self.energy = math.min(MAX_ENERGY, self.energy + ENERGY_RECOVER_RATE * dt)
+		sync_energy_hud(self)
+	end
+	
 end
 
 function fixed_update(self, dt)

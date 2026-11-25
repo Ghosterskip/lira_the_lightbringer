@@ -1,3 +1,8 @@
+script: "/gui/hud/hud_script.gui_script"
+fonts {
+  name: "medieval_sharp"
+  font: "/assets/fonts/medieval_sharp.font"
+}
 textures {
   name: "gui_atlas"
   texture: "/assets/atlas/gui_atlas.atlas"
@@ -20,7 +25,7 @@ nodes {
 }
 nodes {
   position {
-    x: -319.0
+    x: -412.0
     y: 207.0
   }
   scale {
@@ -69,15 +74,30 @@ nodes {
   position {
     y: 25.0
   }
-  size {
-    x: 200.0
-    y: 50.0
+  scale {
+    x: 0.12
+    y: 0.12
   }
   type: TYPE_BOX
+  texture: "gui_atlas/HBCompound"
   id: "hp"
   parent: "indicators"
-  inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -404.16666
+  }
+  size {
+    x: 1202.0
+    y: 160.0
+  }
+  type: TYPE_BOX
+  texture: "gui_atlas/FilledHealthBar"
+  id: "hp_filled_bar"
+  pivot: PIVOT_W
+  parent: "hp"
+  inherit_alpha: true
 }
 nodes {
   position {
@@ -182,6 +202,27 @@ nodes {
   id: "energy5"
   parent: "energy"
   size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  scale {
+    x: 2.0
+    y: 2.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.5137255
+    y: 0.2784314
+    z: 0.23921569
+  }
+  type: TYPE_TEXT
+  text: "This is an error message"
+  font: "medieval_sharp"
+  id: "error_message"
+  parent: "root"
+  enabled: false
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

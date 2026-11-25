@@ -1,0 +1,72 @@
+local ERROR_DISPLAY_TIME = 2.0
+local FADE_DURATION = 0.3
+local TOTAL_LANTERNS = 6
+local ANIM_FULL = hash("LanternEnergy")   -- Replace with your lit lantern image name in the atlas
+local ANIM_EMPTY = hash("LanternEnergyEmpty") -- Replace with your unlit lantern image name in the atlas
+
+local function set_energy_icons(self, active_count)
+	for i = 1, TOTAL_LANTERNS do
+		local node = self.energy_nodes[i]
+		if i <= active_count then
+			gui.play_flipbook(node, ANIM_FULL)
+		else
+			gui.play_flipbook(node, ANIM_EMPTY)
+		end
+	end
+end
+
+
+local function set_health_bar(self, current_hp, max_hp)
+	local ratio = math.max(0, math.min(1, current_hp / max_hp))
+	gui.set_scale(self.health_fill_node, vmath.vector3(ratio, 1, 1))
+end
+
+local function hide_error(self)
+	gui.animate(self.error_message_node, "color.w", 0, gui.EASING_OUTQUAD, FADE_DURATION, 0, function()
+		gui.set_enabled(self.error_message_node, false)
+	end)
+end
+
+local function show_error(self, text)
+	-- Cancel any running hide timer or fade animation if triggered again
+	if self.error_timer then
+		timer.cancel(self.error_timer)
+		self.error_timer = nil
+	end
+
+	gui.cancel_animations(self.error_message_node, "color.w")
+
+	-- Show immediately at full opacity
+	gui.set_text(self.error_message_node, text)
+	gui.set_alpha(self.error_message_node, 1)
+	gui.set_enabled(self.error_message_node, true)
+
+	-- Schedule fade-out after 2 seconds
+	self.error_timer = timer.delay(ERROR_DISPLAY_TIME, false, function()
+		self.error_timer = nil
+		hide_error(self)
+	end)
+end
+
+function init(self)
+	self.health_fill_node = gui.get_node("hp_filled_bar")
+	self.error_message_node = gui.get_node("error_message")
+	gui.set_pivot(self.health_fill_node, gui.PIVOT_W)
+	set_health_bar(self, 100, 100)
+	self.energy_nodes = {}
+	for i = 0, TOTAL_LANTERNS - 1 do
+		table.insert(self.energy_nodes, gui.get_node("energy" .. i))
+	end
+
+	set_energy_icons(self, TOTAL_LANTERNS)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_health") then
+		set_health_bar(self, message.current, message.max)
+	elseif message_id == hash("show_error") then
+		show_error(self, message.text)
+	elseif message_id == hash("update_energy") then
+		set_energy_icons(self, message.current)
+	end
+end

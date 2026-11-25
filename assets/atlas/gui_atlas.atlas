@@ -16,4 +16,22 @@ images {
 images {
   image: "/assets/images/gui/LanternEnergyEmpty.png"
 }
+images {
+  image: "/assets/images/gui/EmptyHealthBar.png"
+}
+images {
+  image: "/assets/images/gui/FilledHealthBar.png"
+}
+images {
+  image: "/assets/images/gui/HealthBarBG.png"
+}
+images {
+  image: "/assets/images/gui/HealthIconBG.png"
+}
+images {
+  image: "/assets/images/gui/InternalHearth.png"
+}
+images {
+  image: "/assets/images/gui/HBCompound.png"
+}
 extrude_borders: 2
