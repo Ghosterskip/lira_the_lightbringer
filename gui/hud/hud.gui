@@ -20,8 +20,12 @@ nodes {
 }
 nodes {
   position {
-    x: -233.0
-    y: 150.0
+    x: -319.0
+    y: 207.0
+  }
+  scale {
+    x: 0.8
+    y: 0.8
   }
   size {
     x: 400.0

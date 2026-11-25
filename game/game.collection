@@ -111,6 +111,7 @@ embedded_instances {
   "far_z: 1.0\\n"
   "auto_aspect_ratio: 1\\n"
   "orthographic_projection: 1\\n"
+  "orthographic_mode: ORTHO_MODE_AUTO_FIT\\n"
   "\"\n"
   "}\n"
   ""
@@ -128,5 +129,16 @@ embedded_instances {
   ""
   position {
     z: 0.6
+  }
+}
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+  "  id: \"hud\"\n"
+  "  component: \"/gui/hud/hud.gui\"\n"
+  "}\n"
+  ""
+  position {
+    z: 0.7
   }
 }
