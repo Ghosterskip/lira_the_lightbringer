@@ -1,26 +1,53 @@
 go.property("target", msg.url("/player/player"))
 go.property("smooth_speed", 10) -- Higher = tighter follow; set to 0 for instant snap
 
+local msg_shake = hash("shake")
+
 function init(self)
 	-- Activate this camera
 	msg.post("#camera", "acquire_camera_focus")
 	-- Enable camera projection in the default render script
 	msg.post("@render:", "use_camera_projection")
+
+	-- Track the clean (unshaken) camera position separately so shake never drifts the lerp
+	self.base_pos = go.get_position()
+	self.shake_intensity = 0
+	self.shake_duration = 0
+	self.shake_timer = 0
 end
 
 function late_update(self, dt)
 	local target_pos = go.get_world_position(self.target)
-	local cam_pos = go.get_position()
 
 	if self.smooth_speed > 0 then
-		-- Smooth lerp on X and Y while keeping camera Z fixed at 0
-		cam_pos.x = vmath.lerp(math.min(1, self.smooth_speed * dt), cam_pos.x, target_pos.x)
-		cam_pos.y = vmath.lerp(math.min(1, self.smooth_speed * dt), cam_pos.y, target_pos.y)
+		-- Smooth lerp on X and Y using the clean base position
+		local t = math.min(1, self.smooth_speed * dt)
+		self.base_pos.x = vmath.lerp(t, self.base_pos.x, target_pos.x)
+		self.base_pos.y = vmath.lerp(t, self.base_pos.y, target_pos.y)
 	else
 		-- Instant lock on X and Y
-		cam_pos.x = target_pos.x
-		cam_pos.y = target_pos.y
+		self.base_pos.x = target_pos.x
+		self.base_pos.y = target_pos.y
 	end
 
-	go.set_position(cam_pos)
+	-- Apply temporary screen shake offset on top of base_pos
+	local final_pos = vmath.vector3(self.base_pos)
+	if self.shake_timer > 0 then
+		self.shake_timer = self.shake_timer - dt
+		local progress = math.max(self.shake_timer / self.shake_duration, 0)
+		local current_mag = self.shake_intensity * progress
+
+		final_pos.x = final_pos.x + (math.random() * 2 - 1) * current_mag
+		final_pos.y = final_pos.y + (math.random() * 2 - 1) * current_mag
+	end
+
+	go.set_position(final_pos)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_shake then
+		self.shake_intensity = message.intensity or 5
+		self.shake_duration = message.duration or 0.14
+		self.shake_timer = self.shake_duration
+	end
 end

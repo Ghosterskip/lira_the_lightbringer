@@ -1,6 +1,9 @@
 local dialogue_data = require("data.dialogue_data")
 local fmod_audio = require("fmod_audio.fmod_audio")
 local fmod_banks = require("fmod_audio.fmod_banks")
+-- local camera_url = msg.url("/go#camera_follow") -- update to match your camera script path
+local msg_shake = hash("shake")
+go.property("camera_url", msg.url("/go#camera_follow"))
 
 -- Movement tweaks
 local air_acceleration_factor = 0.8
@@ -79,6 +82,7 @@ local function update_animations(self)
 	if self.is_dashing then
 		fmod_audio.play_one_shot("event:/dash")
 		play_animation(self, anim_dash)
+		msg.post(self.camera_url, msg_shake, { intensity = 5, duration = 0.14 })
 		return
 	end
 
@@ -221,6 +225,7 @@ end
 local function jump(self)
 	if self.ground_timer > 0 and not self.is_dashing then
 		self.velocity.y = jump_takeoff_speed
+		particlefx.play("#jump_dust")
 		play_animation(self, anim_jump)
 		self.ground_contact = false
 		self.ground_timer = 0
