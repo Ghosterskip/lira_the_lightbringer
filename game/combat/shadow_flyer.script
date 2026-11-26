@@ -1,0 +1,135 @@
+go.property("hover_amplitude", 14)
+go.property("hover_speed", 3.0)
+go.property("aggro_range", 420)
+go.property("charge_windup", 0.75)
+go.property("charge_speed", 680)
+go.property("charge duration",0.65)
+go.property("recover_duration", 1.0)
+go.property("max_hp", 2)
+go.property("contact_damage", 1)
+
+local GROUP_GROUND = hash("ground")
+local GROUP_PLAYER = hash("player")
+local MSG_CONTACT = hash("contact_point_response")
+local MSG_TAKE_DAMAGE = hash("take_damage")
+
+local STATE_IDLE = 1
+local STATE_WINDUP = 2
+local STATE_CHARGE = 3
+local STATE_RECOVER = 4
+
+function init(self)
+	self.hp = self.max_hp
+	self.state = STATE_IDLE
+	self.state_timer = 0
+	self.hover_timer = math.random() * 6.28
+	self.base_pos = go.get_position()
+	self.velocity = vmath.vector3(0, 0, 0)
+	self.charge_dir = vmath.vector3(0, 0, 0)
+	self.correction = vmath.vector3(0, 0, 0)
+	self.player_url = msg.url("/player/player")
+end
+
+local function enter_windup(self, player_pos)
+	self.state = STATE_WINDUP
+	self.state_timer = self.charge_windup
+	self.velocity = vmath.vector3(0, 0, 0)
+
+	local to_player = (player_pos + vmath.vector3(0, 32, 0)) - go.get_position()
+	if vmath.length_sqr(to_player) > 0 then
+		self.charge_dir = vmath.normalize(to_player)
+	else
+		self.charge_dir = vmath.vector3(-1, 0, 0)
+	end
+
+	sprite.set_hflip("#sprite", self.charge_dir.x < 0)
+	go.set("#sprite", "tint", vmath.vector4(1.8, 0.8, 0.8, 1))
+end
+
+local function start_charge(self)
+	self.state = STATE_CHARGE
+	self.state_timer = self.charge_duration
+	self.velocity = self.charge_dir * self.charge_speed
+	go.set("#sprite", "tint", vmath.vector4(1, 1, 1, 1))
+end
+
+local function enter_recover(self)
+	self.state = STATE_RECOVER
+	self.state_timer = self.recover_duration
+	self.velocity = vmath.vector3(0, 0, 0)
+	self.base_pos = go.get_position()
+end
+
+function fixed_update(self, dt)
+	local pos = go.get_position()
+	local ok, player_pos = pcall(go.get_position, self.player_url)
+	if not ok then return end
+
+	local dist = vmath.length(player_pos - pos)
+
+	if self.state == STATE_IDLE then
+		self.hover_timer = self.hover_timer + dt * self.hover_speed
+		local target_y = self.base_pos.y + math.sin(self.hover_timer) * self.hover_amplitude
+		self.velocity.x = 0
+		self.velocity.y = (target_y - pos.y) * 5
+
+		sprite.set_hflip("#sprite", player_pos.x < pos.x)
+
+		if dist <= self.aggro_range then
+			enter_windup(self, player_pos)
+		end
+
+	elseif self.state == STATE_WINDUP then
+		self.velocity = -self.charge_dir * 45
+		self.state_timer = self.state_timer - dt
+		if self.state_timer <= 0 then
+			start_charge(self)
+		end
+
+	elseif self.state == STATE_CHARGE then
+		self.state_timer = self.state_timer - dt
+		if self.state_timer <= 0 then
+			enter_recover(self)
+		end
+
+	elseif self.state == STATE_RECOVER then
+		self.velocity = self.velocity * 0.9
+		self.state_timer = self.state_timer - dt
+		if self.state_timer <= 0 then
+			self.state = STATE_IDLE
+		end
+	end
+
+	go.set_position(pos + self.velocity * dt)
+	self.correction = vmath.vector3(0, 0, 0)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == MSG_CONTACT then
+		if message.group == GROUP_GROUND and message.distance > 0 then
+			local proj = vmath.project(self.correction, message.normal * message.distance)
+			if proj < 1 then
+				local comp = (message.distance - message.distance * proj) * message.normal
+				go.set_position(go.get_position() + comp)
+				self.correction = self.correction + comp
+			end
+
+			if self.state == STATE_CHARGE then
+				enter_recover(self)
+			end
+		elseif message.group == GROUP_PLAYER then
+			msg.post(message.other_id, "take_damage", { amount = self.contact_damage })
+		end
+
+	elseif message_id == MSG_TAKE_DAMAGE then
+		self.hp = self.hp - (message.amount or 1)
+		go.set("#sprite", "tint", vmath.vector4(3, 3, 3, 1))
+		timer.delay(0.08, false, function()
+			go.set("#sprite", "tint", vmath.vector4(1, 1, 1, 1))
+		end)
+
+		if self.hp <= 0 then
+			go.delete()
+		end
+	end
+end
