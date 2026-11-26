@@ -1,0 +1,6 @@
+function init(self)
+	particlefx.play("#light_burst_particle")
+	timer.delay(0.5, false, function()		
+		go.delete()
+	end)
+end

@@ -1,13 +1,29 @@
 components {
   id: "light_projectile"
   component: "/game/combat/light_projectile.script"
+  properties {
+    id: "direction"
+    value: "1.0, 0.0, 0.0"
+    type: PROPERTY_TYPE_VECTOR3
+  }
 }
 embedded_components {
   id: "projectile_skin"
   type: "sprite"
-  data: "default_animation: \"\"\n"
-  "material: \"/builtins/materials/sprite.material\"\n"
+  data: "default_animation: \"Circle\"\n"
+  "material: \"/assets/materials/lit_sprite.material\"\n"
+  "textures {\n"
+  "  sampler: \"texture_sampler\"\n"
+  "  texture: \"/assets/atlas/lira.atlas\"\n"
+  "}\n"
   ""
+  position {
+    z: -20.0
+  }
+  scale {
+    x: 0.16
+    y: 0.16
+  }
 }
 embedded_components {
   id: "projectile_collision_object"
@@ -19,5 +35,60 @@ embedded_components {
   "group: \"player_projectile\"\n"
   "mask: \"enemy\"\n"
   "mask: \"ground\"\n"
+  "embedded_collision_shape {\n"
+  "  shapes {\n"
+  "    shape_type: TYPE_SPHERE\n"
+  "    position {\n"
+  "    }\n"
+  "    rotation {\n"
+  "    }\n"
+  "    index: 0\n"
+  "    count: 1\n"
+  "  }\n"
+  "  data: 25.0\n"
+  "}\n"
+  ""
+}
+embedded_components {
+  id: "point_light"
+  type: "point_light"
+  data: "data {\n"
+  "  struct {\n"
+  "    fields {\n"
+  "      key: \"color\"\n"
+  "      value {\n"
+  "        list {\n"
+  "          values {\n"
+  "            number: 0.7411764860153198\n"
+  "          }\n"
+  "          values {\n"
+  "            number: 0.7333333492279053\n"
+  "          }\n"
+  "          values {\n"
+  "            number: 0.6823529601097107\n"
+  "          }\n"
+  "        }\n"
+  "      }\n"
+  "    }\n"
+  "    fields {\n"
+  "      key: \"intensity\"\n"
+  "      value {\n"
+  "        number: 20.0\n"
+  "      }\n"
+  "    }\n"
+  "    fields {\n"
+  "      key: \"range\"\n"
+  "      value {\n"
+  "        number: 300.0\n"
+  "      }\n"
+  "    }\n"
+  "  }\n"
+  "}\n"
+  ""
+}
+embedded_components {
+  id: "impact_factory"
+  type: "factory"
+  data: "prototype: \"/game/combat/projectile_impact.go\"\n"
   ""
 }

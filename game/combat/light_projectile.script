@@ -7,6 +7,13 @@ local GROUP_ENEMY = hash("enemy")
 local GROUP_GROUND = hash("ground")
 local MSG_TRIGGER = hash("trigger_response")
 
+local function explode_and_delete(self)
+	if self.has_exploded then return end
+	self.has_exploded = true
+	factory.create("#impact_factory", go.get_position() + vmath.vector3(0, 0, -20) + self.direction * 20)
+	go.delete()
+end
+
 function init(self)
 	self.timer = 0
 	-- Rotate the projectile sprite to match its 8-way travel direction
@@ -30,9 +37,9 @@ function on_message(self, message_id, message, sender)
 	if message_id == MSG_TRIGGER and message.enter then
 		if message.other_group == GROUP_ENEMY then
 			msg.post(message.other_id, "take_damage", { amount = self.damage })
-			go.delete()
+			explode_and_delete(self)
 		elseif message.other_group == GROUP_GROUND then
-			go.delete()
+			explode_and_delete(self)
 		end
 	end
 end

@@ -5,6 +5,7 @@ collection_instances {
   position {
     x: 305.0
     y: 125.0
+    z: 0.2
   }
 }
 scale_along_z: 0
@@ -24,6 +25,7 @@ embedded_instances {
   "restitution: 0.5\\n"
   "group: \\\"\\\"\\n"
   "mask: \\\"player\\\"\\n"
+  "mask: \\\"player_projectile\\\"\\n"
   "\"\n"
   "}\n"
   "embedded_components {\n"
