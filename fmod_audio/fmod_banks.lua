@@ -15,6 +15,21 @@ local BANKS = {
 		resource = "/assets/banks/Master.strings.bank",
 		path = "bank:/Master.strings",
 		preload_samples = false,
+	},
+	sfx = {
+		resource = "/assets/banks/SFX.bank",
+		path = "bank:/SFX",
+		preload_samples = false,
+	},
+	ui = {
+		resource = "/assets/banks/UI.bank",
+		path = "bank:/UI",
+		preload_samples = false,
+	},
+	music = {
+		resource = "/assets/banks/Music.bank",
+		path = "bank:/Music",
+		preload_samples = false,
 	}
 }
 

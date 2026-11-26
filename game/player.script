@@ -74,8 +74,10 @@ end
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
-	fmod_banks.load({ "master", "strings" })
-	self.music = fmod_audio.play_loop("event:/level_music")
+	fmod_banks.load({ "master", "strings", "sfx", "ui", "music" })
+	self.cave_breeze = fmod_audio.play_loop("event:/Cave Breeze")
+	self.cave_drips = fmod_audio.play_loop("event:/Cave Drips")
+	self.cave_music_first_biome = fmod_audio.play_loop("event:/First Biome BG")
 	
 	self.is_shooting = false
 	self.velocity = vmath.vector3(0, 0, 0)
@@ -104,6 +106,13 @@ function init(self)
 	self.shoot_cooldown_timer = 0
 end
 
+local function stop_footsteps(self)
+	if self.footsteps then
+		fmod_audio.stop(self.footsteps, false)
+		self.footsteps = nil
+	end
+end
+
 local function play_animation(self, anim)
 	if self.anim ~= anim then
 		sprite.play_flipbook("#sprite", anim, nil, { playback_rate = anim_playback_rate })
@@ -111,7 +120,7 @@ local function play_animation(self, anim)
 	end
 end
 
-local function update_animations(self)
+local function update_animations(self, dt)
 	if self.facing_direction ~= 0 then
 		sprite.set_hflip("#sprite", self.facing_direction < 0)
 	end
@@ -121,7 +130,7 @@ local function update_animations(self)
 	end
 
 	if self.is_dashing then
-		fmod_audio.play_one_shot("event:/dash")
+		self.dash_sfx = fmod_audio.play_one_shot("event:/Dash")
 		play_animation(self, anim_dash)
 		msg.post(self.camera_url, msg_shake, { intensity = 5, duration = 0.14 })
 		return
@@ -129,11 +138,20 @@ local function update_animations(self)
 
 	if self.ground_timer > 0 then
 		if math.abs(self.velocity.x) < 1 then
+			stop_footsteps(self)
 			play_animation(self, anim_idle)
 		else
 			play_animation(self, anim_walk)
+			self.step_timer = (self.step_timer or 0) - dt
+			if self.step_timer <= 0 then
+				stop_footsteps(self)
+				self.footstep_instance = fmod_audio.play_loop("event:/Footsteps")
+				self.step_timer = 0.34
+			end
 		end
 	else
+		stop_footsteps(self)
+		self.step_timer = 0
 		if self.velocity.y > 0 then
 			play_animation(self, anim_jump)
 		else
@@ -188,7 +206,7 @@ function update(self, dt)
 		self.shoot_cooldown_timer = self.shoot_cooldown_timer - dt
 	end
 
-	update_animations(self)
+	update_animations(self, dt)
 	if self.energy < MAX_ENERGY then
 		self.energy = math.min(MAX_ENERGY, self.energy + ENERGY_RECOVER_RATE * dt)
 		sync_energy_hud(self)
